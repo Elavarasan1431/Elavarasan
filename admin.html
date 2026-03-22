@@ -3,179 +3,489 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trend Vibes Admin</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<title>Trend Vibes — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Barlow',sans-serif;background:#f0faf4;color:#1a2e1f}
-#loginPage{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#f0faf4,#fce4ed)}
-.lbox{background:#fff;border-radius:20px;padding:48px 40px;width:360px;border:2px solid #b8e8cc}
-.lbox h1{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:.1em;text-align:center;margin-bottom:4px;color:#145a32}
-.lbox h1 span{color:#e0648a}
-.lbox p{text-align:center;font-size:.8rem;color:#6b8f76;letter-spacing:.15em;text-transform:uppercase;margin-bottom:32px}
-.lbox label{display:block;font-family:'Barlow Condensed',sans-serif;font-size:.8rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#1e8449;margin-bottom:8px}
-.lbox input{width:100%;padding:14px 16px;border:2px solid #b8e8cc;border-radius:10px;font-size:1rem;outline:none;font-family:'Barlow',sans-serif;color:#1a2e1f;margin-bottom:20px}
-.lbox input:focus{border-color:#1e8449}
-.lbox button{width:100%;padding:15px;border:none;border-radius:10px;background:linear-gradient(135deg,#1e8449,#e0648a);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;cursor:pointer}
-#lerr{background:#fce4ed;color:#a93060;border-radius:8px;padding:10px;text-align:center;font-size:.85rem;margin-bottom:16px;display:none}
-#adminPage{display:none}
-.topbar{background:linear-gradient(90deg,#145a32,#1e8449);color:#fff;padding:16px 28px;display:flex;align-items:center;justify-content:space-between}
-.topbar h2{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.1em}
-.topbar h2 span{color:#f093b0}
-.tbtn{padding:8px 18px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:.85rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;text-decoration:none;border:none;margin-left:8px}
-.tbtn-view{background:rgba(255,255,255,.2);color:#fff}
-.tbtn-out{background:#e0648a;color:#fff}
-.tabs{background:#fff;border-bottom:2px solid #b8e8cc;display:flex;padding:0 28px;gap:4px;overflow-x:auto}
-.tab{padding:14px 20px;font-family:'Barlow Condensed',sans-serif;font-size:.88rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;color:#6b8f76;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap}
-.tab.on{color:#1e8449;border-bottom-color:#1e8449}
-.wrap{padding:24px;max-width:1100px}
-.pnl{display:none}
-.pnl.on{display:block}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
-.stat{background:#fff;border:2px solid #b8e8cc;border-radius:14px;padding:18px;text-align:center}
-.snum{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:#1e8449}
-.slbl{font-family:'Barlow Condensed',sans-serif;font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#6b8f76;margin-top:4px}
-.card{background:#fff;border:2px solid #b8e8cc;border-radius:14px;overflow:hidden;margin-bottom:20px}
-.ch{padding:14px 18px;border-bottom:2px solid #b8e8cc;display:flex;justify-content:space-between;align-items:center}
-.ch h3{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em}
+:root{
+  --g1:#064e3b;--g2:#065f46;--g3:#047857;--g4:#059669;--g5:#10b981;
+  --g6:#6ee7b7;--g7:#d1fae5;--g8:#ecfdf5;--g9:#f0fdf4;
+  --pk:#be185d;--pk2:#ec4899;--pk3:#fce7f3;
+  --white:#fff;--gray1:#111827;--gray2:#374151;--gray3:#6b7280;
+  --gray4:#9ca3af;--gray5:#e5e7eb;--gray6:#f9fafb;
+  --border:#e5e7eb;--shadow:0 1px 3px rgba(0,0,0,0.1);
+  --sidebar:240px;
+}
+body{font-family:'Inter',sans-serif;background:var(--gray6);color:var(--gray1);min-height:100vh}
+a{text-decoration:none}
+button{cursor:pointer;font-family:'Inter',sans-serif}
+
+/* ── LOGIN ─────────────────────────────── */
+#loginPage{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#064e3b 0%,#047857 50%,#065f46 100%);
+}
+.lcard{
+  background:var(--white);border-radius:20px;padding:48px 40px;
+  width:380px;box-shadow:0 25px 50px rgba(0,0,0,0.25);
+}
+.lcard-logo{text-align:center;margin-bottom:32px}
+.lcard-logo .logo-circle{
+  width:72px;height:72px;background:linear-gradient(135deg,var(--g1),var(--g4));
+  border-radius:20px;display:flex;align-items:center;justify-content:center;
+  margin:0 auto 16px;font-size:2rem;
+}
+.lcard-logo h1{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:800;color:var(--g1)}
+.lcard-logo h1 span{color:var(--pk2)}
+.lcard-logo p{font-size:0.75rem;color:var(--gray3);letter-spacing:0.12em;text-transform:uppercase;margin-top:4px}
+.lfield{margin-bottom:18px}
+.lfield label{display:block;font-size:0.75rem;font-weight:600;color:var(--gray2);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:8px}
+.lfield input{
+  width:100%;padding:13px 16px;border:1.5px solid var(--border);border-radius:10px;
+  font-size:0.95rem;font-family:'Inter',sans-serif;color:var(--gray1);outline:none;
+  transition:border-color 0.2s;background:var(--gray6);
+}
+.lfield input:focus{border-color:var(--g4);background:var(--white)}
+.lbtn{
+  width:100%;padding:14px;border:none;border-radius:10px;margin-top:8px;
+  background:linear-gradient(135deg,var(--g1),var(--g3));
+  color:var(--white);font-size:0.9rem;font-weight:600;
+  letter-spacing:0.05em;transition:opacity 0.2s;
+}
+.lbtn:hover{opacity:0.9}
+#lerr{
+  background:#fef2f2;border:1px solid #fecaca;color:#dc2626;
+  border-radius:8px;padding:10px 14px;font-size:0.82rem;
+  margin-bottom:16px;display:none;text-align:center;font-weight:500;
+}
+
+/* ── ADMIN SHELL ───────────────────────── */
+#adminPage{display:none;min-height:100vh}
+.shell{display:flex;min-height:100vh}
+
+/* ── SIDEBAR ───────────────────────────── */
+.sidebar{
+  width:var(--sidebar);background:var(--g1);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;height:100vh;z-index:50;
+}
+.sb-brand{
+  padding:24px 20px;border-bottom:1px solid rgba(255,255,255,0.1);
+}
+.sb-logo{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:800;color:var(--white)}
+.sb-logo span{color:var(--g6)}
+.sb-tag{font-size:0.6rem;color:var(--g6);letter-spacing:0.2em;text-transform:uppercase;margin-top:2px;opacity:0.7}
+.sb-nav{flex:1;padding:16px 0;overflow-y:auto}
+.sb-section{font-size:0.62rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;
+  color:rgba(255,255,255,0.4);padding:16px 20px 6px}
+.sb-item{
+  display:flex;align-items:center;gap:12px;padding:11px 20px;
+  color:rgba(255,255,255,0.7);font-size:0.85rem;font-weight:500;
+  transition:all 0.15s;border-left:3px solid transparent;cursor:pointer;
+}
+.sb-item:hover{background:rgba(255,255,255,0.08);color:var(--white)}
+.sb-item.on{background:rgba(255,255,255,0.12);color:var(--white);border-left-color:var(--g5)}
+.sb-item .ic{font-size:1.1rem;width:20px;text-align:center}
+.sb-bottom{padding:16px 20px;border-top:1px solid rgba(255,255,255,0.1)}
+.sb-user{display:flex;align-items:center;gap:10px}
+.sb-avatar{width:34px;height:34px;background:var(--g4);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:0.9rem;color:var(--white);font-weight:700}
+.sb-uname{font-size:0.82rem;font-weight:600;color:var(--white)}
+.sb-urole{font-size:0.68rem;color:rgba(255,255,255,0.5);margin-top:1px}
+
+/* ── MAIN AREA ─────────────────────────── */
+.main-area{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column}
+
+/* ── TOPBAR ────────────────────────────── */
+.topbar{
+  background:var(--white);border-bottom:1px solid var(--border);
+  padding:0 28px;height:60px;display:flex;align-items:center;
+  justify-content:space-between;position:sticky;top:0;z-index:40;
+}
+.topbar-left{display:flex;align-items:center;gap:8px}
+.breadcrumb{font-size:0.78rem;color:var(--gray3)}
+.breadcrumb span{color:var(--gray1);font-weight:600}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.tb-btn{
+  padding:8px 16px;border-radius:8px;font-size:0.78rem;font-weight:600;
+  letter-spacing:0.03em;border:none;transition:all 0.15s;
+}
+.tb-store{background:var(--g8);color:var(--g3);border:1px solid var(--g7)}
+.tb-store:hover{background:var(--g7)}
+.tb-logout{background:var(--pk3);color:var(--pk);border:1px solid #fbcfe8}
+.tb-logout:hover{background:#fce7f3}
+
+/* ── CONTENT ───────────────────────────── */
+.content{padding:28px;flex:1}
+.pnl{display:none}.pnl.on{display:block}
+
+/* Page header */
+.ph{margin-bottom:24px;display:flex;align-items:center;justify-content:space-between}
+.ph-left h2{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:800;color:var(--gray1)}
+.ph-left p{font-size:0.82rem;color:var(--gray3);margin-top:3px}
+
+/* ── STATS GRID ────────────────────────── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat-card{
+  background:var(--white);border:1px solid var(--border);border-radius:14px;
+  padding:20px;display:flex;align-items:center;gap:16px;
+  box-shadow:var(--shadow);
+}
+.stat-ic{
+  width:48px;height:48px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;
+}
+.ic-green{background:var(--g8)}
+.ic-pink{background:var(--pk3)}
+.ic-blue{background:#eff6ff}
+.ic-gold{background:#fffbeb}
+.stat-info{}
+.stat-num{font-size:1.8rem;font-weight:700;color:var(--gray1);line-height:1}
+.stat-lbl{font-size:0.72rem;color:var(--gray3);font-weight:500;margin-top:3px;text-transform:uppercase;letter-spacing:0.05em}
+
+/* ── CARD ──────────────────────────────── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:20px;box-shadow:var(--shadow)}
+.card-head{
+  padding:16px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.card-head h3{font-size:0.95rem;font-weight:700;color:var(--gray1)}
+.card-head p{font-size:0.78rem;color:var(--gray3);margin-top:2px}
+
+/* ── TABLE ─────────────────────────────── */
+.tbl-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse}
-th{background:#f0faf4;padding:11px 14px;text-align:left;font-family:'Barlow Condensed',sans-serif;font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#6b8f76;border-bottom:2px solid #b8e8cc}
-td{padding:13px 14px;border-bottom:1px solid #d5f0e0;font-size:.87rem}
+th{
+  background:var(--gray6);padding:11px 16px;text-align:left;
+  font-size:0.7rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--gray3);border-bottom:1px solid var(--border);
+}
+td{padding:13px 16px;border-bottom:1px solid var(--gray5);font-size:0.85rem;color:var(--gray2);vertical-align:middle}
 tr:last-child td{border-bottom:none}
-tr:hover td{background:#f0faf4}
-.bdg{display:inline-block;padding:3px 10px;border-radius:50px;font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
-.bn{background:#1e8449;color:#fff}.bs{background:#e0648a;color:#fff}.bh{background:#f093b0;color:#fff}.bx{background:#d5f0e0;color:#1e8449}
-.bsm{padding:6px 12px;border:none;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-size:.75rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;margin-right:4px}
-.be{background:#d5f0e0;color:#145a32}.bd{background:#fce4ed;color:#a93060}
-.fg{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:18px}
-.fld{display:flex;flex-direction:column;gap:6px}
-.fld.full{grid-column:span 2}
-.fld label{font-family:'Barlow Condensed',sans-serif;font-size:.75rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#1e8449}
-.fld input,.fld select{padding:11px 13px;border:2px solid #b8e8cc;border-radius:10px;font-family:'Barlow',sans-serif;font-size:.88rem;color:#1a2e1f;outline:none;background:#f8fdfb}
-.fld input:focus,.fld select:focus{border-color:#1e8449;background:#fff}
-.fa{padding:0 18px 18px;display:flex;gap:10px}
-.bsave{background:linear-gradient(135deg,#1e8449,#e0648a);color:#fff;border:none;border-radius:10px;padding:12px 28px;font-family:'Barlow Condensed',sans-serif;font-size:.95rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
-.bcan{background:#f0faf4;color:#3a5a44;border:2px solid #b8e8cc;border-radius:10px;padding:10px 22px;font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
-.er{display:flex;flex-wrap:wrap;gap:7px}
-.ep{width:36px;height:36px;border-radius:8px;border:2px solid #b8e8cc;background:#fff;display:flex;align-items:center;justify-content:center;font-size:1.1rem;cursor:pointer}
-.ep.on{border-color:#1e8449;background:#d5f0e0}
-.sg{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.sc{background:#fff;border:2px solid #b8e8cc;border-radius:14px;padding:22px}
-.sc h3{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.06em;margin-bottom:14px;color:#145a32}
-.pc{background:#fff;border:2px solid #b8e8cc;border-radius:14px;padding:24px;max-width:400px}
-.pc h3{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.06em;margin-bottom:18px;color:#145a32}
-#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:#145a32;color:#fff;border-radius:50px;padding:11px 26px;font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;z-index:9999;white-space:nowrap;transition:transform .35s ease}
-#toast.on{transform:translateX(-50%) translateY(0)}
-@media(max-width:600px){.stats{grid-template-columns:1fr 1fr}.fg{grid-template-columns:1fr}.fld.full{grid-column:span 1}.sg{grid-template-columns:1fr}}
+tr:hover td{background:var(--gray6)}
+.prod-name{font-weight:600;color:var(--gray1)}
+.prod-sub{font-size:0.75rem;color:var(--gray4);margin-top:2px}
+
+/* badges */
+.bdg{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:0.68rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase}
+.bn{background:#dcfce7;color:#166534}
+.bs{background:#fce7f3;color:#9d174d}
+.bh{background:#fef3c7;color:#92400e}
+.bx{background:var(--gray5);color:var(--gray3)}
+
+/* action buttons */
+.act-btn{
+  padding:6px 14px;border:none;border-radius:6px;font-size:0.72rem;
+  font-weight:600;letter-spacing:0.03em;cursor:pointer;transition:all 0.15s;margin-right:4px;
+}
+.act-edit{background:var(--g8);color:var(--g3);border:1px solid var(--g7)}
+.act-edit:hover{background:var(--g7)}
+.act-del{background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
+.act-del:hover{background:#fee2e2}
+
+/* ── FORM ──────────────────────────────── */
+.form-body{padding:20px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-grid.g3{grid-template-columns:1fr 1fr 1fr}
+.ff{display:flex;flex-direction:column;gap:6px}
+.ff.full{grid-column:span 2}
+.ff label{font-size:0.72rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--gray2)}
+.ff input,.ff select{
+  padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;
+  font-size:0.88rem;font-family:'Inter',sans-serif;color:var(--gray1);
+  outline:none;background:var(--gray6);transition:border-color 0.15s;
+}
+.ff input:focus,.ff select:focus{border-color:var(--g4);background:var(--white)}
+.form-divider{height:1px;background:var(--border);margin:20px 0}
+.form-section-title{font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--g3);margin-bottom:14px}
+.form-footer{padding:16px 20px;border-top:1px solid var(--border);display:flex;gap:10px;background:var(--gray6)}
+
+/* emoji grid */
+.emoji-grid{display:flex;flex-wrap:wrap;gap:6px}
+.ep{width:36px;height:36px;border-radius:8px;border:1.5px solid var(--border);
+  background:var(--white);display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;cursor:pointer;transition:all 0.15s}
+.ep:hover{border-color:var(--g4);background:var(--g8)}
+.ep.on{border-color:var(--g3);background:var(--g8);box-shadow:0 0 0 2px var(--g7)}
+
+/* ── BUTTONS ───────────────────────────── */
+.btn-primary{
+  padding:10px 24px;border:none;border-radius:8px;
+  background:linear-gradient(135deg,var(--g2),var(--g4));
+  color:var(--white);font-size:0.85rem;font-weight:600;
+  letter-spacing:0.03em;cursor:pointer;transition:opacity 0.15s;
+}
+.btn-primary:hover{opacity:0.9}
+.btn-secondary{
+  padding:9px 20px;border:1.5px solid var(--border);border-radius:8px;
+  background:var(--white);color:var(--gray2);font-size:0.85rem;font-weight:500;cursor:pointer;
+}
+.btn-sm{padding:7px 16px;font-size:0.8rem}
+.btn-pink{background:linear-gradient(135deg,var(--pk),var(--pk2));color:var(--white);border:none;border-radius:8px;padding:10px 20px;font-size:0.85rem;font-weight:600;cursor:pointer}
+
+/* ── QUICK ACTIONS ─────────────────────── */
+.qa-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:20px}
+.qa-card{
+  border:1.5px solid var(--border);border-radius:12px;padding:18px;
+  cursor:pointer;transition:all 0.15s;text-align:center;background:var(--gray6);
+}
+.qa-card:hover{border-color:var(--g5);background:var(--g9)}
+.qa-icon{font-size:1.8rem;margin-bottom:8px}
+.qa-title{font-size:0.85rem;font-weight:600;color:var(--gray1)}
+.qa-sub{font-size:0.72rem;color:var(--gray3);margin-top:3px}
+
+/* ── SETTINGS ──────────────────────────── */
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.setting-card{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+.setting-card-head{padding:16px 20px;border-bottom:1px solid var(--border);background:var(--gray6)}
+.setting-card-head h3{font-size:0.9rem;font-weight:700;color:var(--gray1)}
+.setting-card-body{padding:20px}
+
+/* ── PASSWORD ──────────────────────────── */
+.pw-card{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;max-width:460px;box-shadow:var(--shadow)}
+
+/* ── TOAST ─────────────────────────────── */
+#toast{
+  position:fixed;bottom:24px;right:24px;
+  background:var(--g1);color:var(--white);
+  border-radius:10px;padding:12px 20px;
+  font-size:0.82rem;font-weight:600;
+  z-index:9999;white-space:nowrap;
+  transform:translateY(80px);opacity:0;
+  transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  display:flex;align-items:center;gap:8px;
+  border-left:4px solid var(--g5);
+}
+#toast.on{transform:translateY(0);opacity:1}
+
+/* ── RESPONSIVE ────────────────────────── */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .main-area{margin-left:0}
+  .stats{grid-template-columns:1fr 1fr}
+  .form-grid{grid-template-columns:1fr}
+  .ff.full{grid-column:span 1}
+  .settings-grid{grid-template-columns:1fr}
+  .qa-grid{grid-template-columns:1fr 1fr}
+}
 </style>
 </head>
 <body>
 
+<!-- LOGIN -->
 <div id="loginPage">
-  <div class="lbox">
-    <h1>Trend<span>Vibes</span></h1>
-    <p>Admin Panel</p>
-    <div id="lerr">Wrong password. Try again!</div>
-    <label>Password</label>
-    <input type="password" id="pwin" placeholder="Enter admin password">
-    <button id="lbtn">Login to Admin</button>
+  <div class="lcard">
+    <div class="lcard-logo">
+      <div class="logo-circle">🌿</div>
+      <h1>Trend<span>Vibes</span></h1>
+      <p>Admin Dashboard</p>
+    </div>
+    <div id="lerr">❌ Incorrect password. Please try again.</div>
+    <div class="lfield">
+      <label>Admin Password</label>
+      <input type="password" id="pwin" placeholder="Enter your password">
+    </div>
+    <button class="lbtn" id="lbtn">Sign In →</button>
   </div>
 </div>
 
+<!-- ADMIN -->
 <div id="adminPage">
-  <div class="topbar">
-    <h2>Trend<span>Vibes</span></h2>
-    <div>
-      <a class="tbtn tbtn-view" href="index.html" target="_blank">View Store</a>
-      <button class="tbtn tbtn-out" id="loutbtn">Logout</button>
-    </div>
-  </div>
-  <div class="tabs">
-    <div class="tab on" id="t0">Dashboard</div>
-    <div class="tab" id="t1">Products</div>
-    <div class="tab" id="t2">Add Product</div>
-    <div class="tab" id="t3">Settings</div>
-    <div class="tab" id="t4">Password</div>
-  </div>
-  <div class="wrap">
+  <div class="shell">
 
-    <div class="pnl on" id="p0">
-      <div class="stats">
-        <div class="stat"><div class="snum" id="d0">0</div><div class="slbl">Total</div></div>
-        <div class="stat"><div class="snum" id="d1">0</div><div class="slbl">Sarees</div></div>
-        <div class="stat"><div class="snum" id="d2">0</div><div class="slbl">Tops</div></div>
-        <div class="stat"><div class="snum" id="d3">0</div><div class="slbl">Skirts</div></div>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sb-brand">
+        <div class="sb-logo">Trend<span>Vibes</span></div>
+        <div class="sb-tag">Fashion Store Admin</div>
       </div>
-      <div class="card">
-        <div class="ch"><h3>Quick Actions</h3></div>
-        <div style="padding:18px;display:flex;gap:10px;flex-wrap:wrap">
-          <button class="bsave" id="qa1">Add Product</button>
-          <button class="bsave" style="background:linear-gradient(135deg,#e0648a,#f093b0)" id="qa2">Manage Products</button>
-        </div>
+      <div class="sb-nav">
+        <div class="sb-section">Main Menu</div>
+        <div class="sb-item on" id="t0"><span class="ic">📊</span> Dashboard</div>
+        <div class="sb-item" id="t1"><span class="ic">👗</span> All Products</div>
+        <div class="sb-item" id="t2"><span class="ic">➕</span> Add Product</div>
+        <div class="sb-section">Store</div>
+        <div class="sb-item" id="t3"><span class="ic">⚙️</span> Settings</div>
+        <div class="sb-section">Account</div>
+        <div class="sb-item" id="t4"><span class="ic">🔐</span> Change Password</div>
       </div>
-    </div>
-
-    <div class="pnl" id="p1">
-      <div class="card">
-        <div class="ch"><h3>All Products</h3><button class="bsave" style="padding:7px 16px;font-size:.82rem" id="qa3">Add New</button></div>
-        <table><thead><tr><th>Icon</th><th>Name</th><th>Category</th><th>Price</th><th>Old Price</th><th>Badge</th><th>Actions</th></tr></thead>
-        <tbody id="ptbl"></tbody></table>
-      </div>
-    </div>
-
-    <div class="pnl" id="p2">
-      <div class="card">
-        <div class="ch"><h3 id="fh">Add Product</h3></div>
-        <input type="hidden" id="fid">
-        <div class="fg">
-          <div class="fld"><label>Product Name</label><input id="fn" placeholder="e.g. Kanjivaram Silk"></div>
-          <div class="fld"><label>Description</label><input id="fd" placeholder="e.g. Traditional Silk Saree"></div>
-          <div class="fld"><label>Price (Rs.)</label><input type="number" id="fp" placeholder="2499"></div>
-          <div class="fld"><label>Old Price (Rs.) optional</label><input type="number" id="fo" placeholder="Leave blank"></div>
-          <div class="fld"><label>Category</label>
-            <select id="fc"><option value="saree">Saree</option><option value="top">Top</option><option value="skirts">Skirts</option><option value="tshirts">T-Shirts</option></select>
+      <div class="sb-bottom">
+        <div class="sb-user">
+          <div class="sb-avatar">E</div>
+          <div>
+            <div class="sb-uname">Elavarasan</div>
+            <div class="sb-urole">Store Owner</div>
           </div>
-          <div class="fld"><label>Badge</label>
-            <select id="fb"><option value="">None</option><option value="new">New In</option><option value="sale">Sale</option><option value="hot">Hot</option></select>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main-area">
+
+      <!-- TOPBAR -->
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="breadcrumb">Trend Vibes &rsaquo; <span id="breadcrumb-text">Dashboard</span></div>
+        </div>
+        <div class="topbar-right">
+          <a href="index.html" target="_blank"><button class="tb-btn tb-store">🌐 View Store</button></a>
+          <button class="tb-btn tb-logout" id="loutbtn">Sign Out</button>
+        </div>
+      </div>
+
+      <!-- CONTENT -->
+      <div class="content">
+
+        <!-- DASHBOARD -->
+        <div class="pnl on" id="p0">
+          <div class="ph">
+            <div class="ph-left">
+              <h2>Dashboard</h2>
+              <p>Welcome back, Elavarasan! Here's your store overview.</p>
+            </div>
           </div>
-          <div class="fld"><label>Stars</label>
-            <select id="fst"><option value="5">5 Stars</option><option value="4">4 Stars</option><option value="3">3 Stars</option></select>
+          <div class="stats">
+            <div class="stat-card">
+              <div class="stat-ic ic-green">👗</div>
+              <div class="stat-info"><div class="stat-num" id="d0">0</div><div class="stat-lbl">Total Products</div></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-ic ic-pink">🥻</div>
+              <div class="stat-info"><div class="stat-num" id="d1">0</div><div class="stat-lbl">Sarees</div></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-ic ic-blue">👘</div>
+              <div class="stat-info"><div class="stat-num" id="d2">0</div><div class="stat-lbl">Tops & T-Shirts</div></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-ic ic-gold">👗</div>
+              <div class="stat-info"><div class="stat-num" id="d3">0</div><div class="stat-lbl">Skirts</div></div>
+            </div>
           </div>
-          <div class="fld full"><label>Icon</label><div class="er" id="er"></div></div>
+          <div class="card">
+            <div class="card-head"><div><h3>Quick Actions</h3><p>Manage your store quickly</p></div></div>
+            <div class="qa-grid">
+              <div class="qa-card" id="qa1"><div class="qa-icon">➕</div><div class="qa-title">Add Product</div><div class="qa-sub">Add new item to store</div></div>
+              <div class="qa-card" id="qa2"><div class="qa-icon">📋</div><div class="qa-title">Manage Products</div><div class="qa-sub">Edit or delete products</div></div>
+              <div class="qa-card" onclick="window.open('index.html','_blank')"><div class="qa-icon">🌐</div><div class="qa-title">View Live Store</div><div class="qa-sub">See customer view</div></div>
+            </div>
+          </div>
         </div>
-        <div class="fa">
-          <button class="bsave" id="fsave">Save Product</button>
-          <button class="bcan" id="fcan">Cancel</button>
+
+        <!-- PRODUCTS -->
+        <div class="pnl" id="p1">
+          <div class="ph">
+            <div class="ph-left"><h2>All Products</h2><p>Manage and update your store products</p></div>
+            <button class="btn-primary btn-sm" id="qa3">+ Add New Product</button>
+          </div>
+          <div class="card">
+            <div class="tbl-wrap">
+              <table>
+                <thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Old Price</th><th>Badge</th><th>Stars</th><th>Actions</th></tr></thead>
+                <tbody id="ptbl"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
+
+        <!-- ADD PRODUCT -->
+        <div class="pnl" id="p2">
+          <div class="ph">
+            <div class="ph-left"><h2 id="fh">Add New Product</h2><p>Fill in product details below</p></div>
+          </div>
+          <div class="card">
+            <input type="hidden" id="fid">
+            <div class="form-body">
+              <div class="form-section-title">Product Information</div>
+              <div class="form-grid">
+                <div class="ff"><label>Product Name</label><input id="fn" placeholder="e.g. Kanjivaram Silk"></div>
+                <div class="ff"><label>Description</label><input id="fd" placeholder="e.g. Traditional Silk Saree"></div>
+                <div class="ff"><label>Price (₹)</label><input type="number" id="fp" placeholder="2499"></div>
+                <div class="ff"><label>Old Price (₹) — Sale only</label><input type="number" id="fo" placeholder="Leave blank if no sale"></div>
+              </div>
+              <div class="form-divider"></div>
+              <div class="form-section-title">Category & Details</div>
+              <div class="form-grid">
+                <div class="ff">
+                  <label>Category</label>
+                  <select id="fc">
+                    <option value="saree">🥻 Saree</option>
+                    <option value="top">👘 Top</option>
+                    <option value="skirts">👗 Skirts</option>
+                    <option value="tshirts">👚 T-Shirts</option>
+                  </select>
+                </div>
+                <div class="ff">
+                  <label>Badge</label>
+                  <select id="fb">
+                    <option value="">None</option>
+                    <option value="new">✨ New In</option>
+                    <option value="sale">🏷 Sale</option>
+                    <option value="hot">🔥 Hot</option>
+                  </select>
+                </div>
+                <div class="ff">
+                  <label>Star Rating</label>
+                  <select id="fst">
+                    <option value="5">★★★★★ — 5 Stars</option>
+                    <option value="4">★★★★☆ — 4 Stars</option>
+                    <option value="3">★★★☆☆ — 3 Stars</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-divider"></div>
+              <div class="form-section-title">Product Icon</div>
+              <div class="emoji-grid" id="er"></div>
+            </div>
+            <div class="form-footer">
+              <button class="btn-primary" id="fsave">💾 Save Product</button>
+              <button class="btn-secondary" id="fcan">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SETTINGS -->
+        <div class="pnl" id="p3">
+          <div class="ph"><div class="ph-left"><h2>Settings</h2><p>Manage your store configuration</p></div></div>
+          <div class="settings-grid">
+            <div class="setting-card">
+              <div class="setting-card-head"><h3>🏪 Store Information</h3></div>
+              <div class="setting-card-body">
+                <div class="ff" style="margin-bottom:14px"><label>Store Name</label><input value="Trend Vibes"></div>
+                <div class="ff" style="margin-bottom:14px"><label>Tagline</label><input value="Fashion Store"></div>
+                <div class="ff" style="margin-bottom:20px"><label>Website URL</label><input value="elavarasan1431.github.io/Elavarasan"></div>
+                <button class="btn-primary btn-sm" id="s1">Save Changes</button>
+              </div>
+            </div>
+            <div class="setting-card">
+              <div class="setting-card-head"><h3>💳 Payment Settings</h3></div>
+              <div class="setting-card-body">
+                <div class="ff" style="margin-bottom:14px"><label>UPI ID</label><input value="methalelavarasan-1@okaxis"></div>
+                <div class="ff" style="margin-bottom:14px"><label>Free Shipping Above (₹)</label><input type="number" value="1999"></div>
+                <div class="ff" style="margin-bottom:20px"><label>Estimated Delivery (Days)</label><input type="number" value="5"></div>
+                <button class="btn-primary btn-sm" id="s2">Save Changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="pnl" id="p4">
+          <div class="ph"><div class="ph-left"><h2>Change Password</h2><p>Update your admin panel password</p></div></div>
+          <div class="pw-card">
+            <div class="setting-card-head"><h3>🔐 Update Password</h3></div>
+            <div class="setting-card-body">
+              <div class="ff" style="margin-bottom:14px"><label>Current Password</label><input type="password" id="pc1" placeholder="Enter current password"></div>
+              <div class="ff" style="margin-bottom:14px"><label>New Password</label><input type="password" id="pc2" placeholder="Enter new password (min 4 chars)"></div>
+              <div class="ff" style="margin-bottom:22px"><label>Confirm New Password</label><input type="password" id="pc3" placeholder="Confirm new password"></div>
+              <button class="btn-primary" id="pcbtn">Update Password</button>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
-
-    <div class="pnl" id="p3">
-      <div class="sg">
-        <div class="sc"><h3>Store Info</h3>
-          <div class="fld" style="margin-bottom:12px"><label>Store Name</label><input value="Trend Vibes"></div>
-          <div class="fld" style="margin-bottom:12px"><label>Tagline</label><input value="Fashion Store"></div>
-          <div class="fld" style="margin-bottom:18px"><label>Website</label><input value="www.trendvibes.com"></div>
-          <button class="bsave" id="s1">Save</button>
-        </div>
-        <div class="sc"><h3>Payment Info</h3>
-          <div class="fld" style="margin-bottom:12px"><label>UPI ID</label><input value="methalelavarasan-1@okaxis"></div>
-          <div class="fld" style="margin-bottom:12px"><label>Free Shipping Above (Rs.)</label><input type="number" value="1999"></div>
-          <div class="fld" style="margin-bottom:18px"><label>Delivery Days</label><input type="number" value="5"></div>
-          <button class="bsave" id="s2">Save</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="pnl" id="p4">
-      <div class="pc"><h3>Change Password</h3>
-        <div class="fld" style="margin-bottom:12px"><label>Current Password</label><input type="password" id="pc1" placeholder="Current password"></div>
-        <div class="fld" style="margin-bottom:12px"><label>New Password</label><input type="password" id="pc2" placeholder="New password"></div>
-        <div class="fld" style="margin-bottom:18px"><label>Confirm Password</label><input type="password" id="pc3" placeholder="Confirm password"></div>
-        <button class="bsave" id="pcbtn">Update Password</button>
-      </div>
-    </div>
-
   </div>
 </div>
 
@@ -195,10 +505,11 @@ var prods = [
 ];
 var EMS = ["🥻","👗","👘","🩱","👚","✨","🌸","🌼","🧶","💎","🌺","🎀","👙","🩳","🧥","👒","👜","🎽"];
 var selEm = "👗";
+var PAGES = ["Dashboard","All Products","Add Product","Settings","Change Password"];
 
 // LOGIN
 document.getElementById("lbtn").onclick = login;
-document.getElementById("pwin").onkeyup = function(e){ if(e.key==="Enter") login(); };
+document.getElementById("pwin").addEventListener("keyup", function(e){ if(e.key==="Enter") login(); });
 function login(){
   var v = document.getElementById("pwin").value.trim();
   if(v === PW){
@@ -211,6 +522,8 @@ function login(){
     document.getElementById("pwin").focus();
   }
 }
+
+// LOGOUT
 document.getElementById("loutbtn").onclick = function(){
   document.getElementById("adminPage").style.display = "none";
   document.getElementById("loginPage").style.display = "flex";
@@ -220,9 +533,10 @@ document.getElementById("loutbtn").onclick = function(){
 // TABS
 function goTab(n){
   for(var i=0;i<5;i++){
-    document.getElementById("p"+i).className = "pnl" + (i===n?" on":"");
-    document.getElementById("t"+i).className = "tab" + (i===n?" on":"");
+    document.getElementById("p"+i).className = "pnl"+(i===n?" on":"");
+    document.getElementById("t"+i).className = "sb-item"+(i===n?" on":"");
   }
+  document.getElementById("breadcrumb-text").textContent = PAGES[n];
   if(n===0) upDash();
   if(n===1) renderTbl();
   if(n===2) resetForm();
@@ -243,19 +557,22 @@ function upDash(){
 }
 
 // TABLE
+function starStr(n){var s="";for(var i=0;i<5;i++) s+=i<n?"★":"☆";return s;}
 function renderTbl(){
-  var cats = {saree:"Saree",top:"Top",skirts:"Skirts",tshirts:"T-Shirts"};
-  var h = "";
+  var cats={saree:"Saree",top:"Top",skirts:"Skirts",tshirts:"T-Shirts"};
+  var h="";
   for(var i=0;i<prods.length;i++){
-    var p = prods[i];
-    var bc = p.badge==="new"?"bn":p.badge==="sale"?"bs":p.badge==="hot"?"bh":"bx";
-    h += "<tr><td style='font-size:1.4rem'>"+p.em+"</td>";
-    h += "<td><strong>"+p.name+"</strong><br><small style='color:#6b8f76'>"+p.desc+"</small></td>";
-    h += "<td>"+(cats[p.cat]||p.cat)+"</td>";
-    h += "<td style='color:#1e8449;font-weight:700'>Rs."+p.price+"</td>";
-    h += "<td style='color:#aaa;text-decoration:line-through'>"+(p.old>0?"Rs."+p.old:"—")+"</td>";
-    h += "<td><span class='bdg "+bc+"'>"+(p.badge||"none")+"</span></td>";
-    h += "<td><button class='bsm be' data-eid='"+p.id+"'>Edit</button><button class='bsm bd' data-did='"+p.id+"'>Delete</button></td></tr>";
+    var p=prods[i];
+    var bc=p.badge==="new"?"bn":p.badge==="sale"?"bs":p.badge==="hot"?"bh":"bx";
+    h+="<tr>";
+    h+="<td><div style='display:flex;align-items:center;gap:10px'><span style='font-size:1.6rem'>"+p.em+"</span><div><div class='prod-name'>"+p.name+"</div><div class='prod-sub'>"+p.desc+"</div></div></div></td>";
+    h+="<td>"+( cats[p.cat]||p.cat)+"</td>";
+    h+="<td style='font-weight:600;color:#065f46'>₹"+p.price+"</td>";
+    h+="<td style='color:#9ca3af;text-decoration:line-through'>"+(p.old>0?"₹"+p.old:"—")+"</td>";
+    h+="<td><span class='bdg "+bc+"'>"+(p.badge||"—")+"</span></td>";
+    h+="<td style='color:#f59e0b'>"+starStr(p.stars)+"</td>";
+    h+="<td><button class='act-btn act-edit' data-eid='"+p.id+"'>✏️ Edit</button><button class='act-btn act-del' data-did='"+p.id+"'>🗑 Delete</button></td>";
+    h+="</tr>";
   }
   document.getElementById("ptbl").innerHTML = h;
   document.querySelectorAll("[data-eid]").forEach(function(b){
@@ -268,102 +585,99 @@ function renderTbl(){
 
 // EMOJIS
 function buildEm(){
-  var h = "";
+  var h="";
   for(var i=0;i<EMS.length;i++){
-    h += "<div class='ep"+(EMS[i]===selEm?" on":"")+"' data-em='"+EMS[i]+"'>"+EMS[i]+"</div>";
+    h+="<div class='ep"+(EMS[i]===selEm?" on":"")+"' data-em='"+EMS[i]+"'>"+EMS[i]+"</div>";
   }
-  document.getElementById("er").innerHTML = h;
+  document.getElementById("er").innerHTML=h;
   document.querySelectorAll("[data-em]").forEach(function(el){
-    el.onclick = function(){ selEm = this.getAttribute("data-em"); buildEm(); };
+    el.onclick=function(){ selEm=this.getAttribute("data-em"); buildEm(); };
   });
 }
 
 // FORM
 function resetForm(){
-  document.getElementById("fh").textContent = "Add Product";
-  document.getElementById("fid").value = "";
-  document.getElementById("fn").value = "";
-  document.getElementById("fd").value = "";
-  document.getElementById("fp").value = "";
-  document.getElementById("fo").value = "";
-  document.getElementById("fc").value = "saree";
-  document.getElementById("fb").value = "";
-  document.getElementById("fst").value = "5";
-  selEm = "👗";
-  buildEm();
+  document.getElementById("fh").textContent="Add New Product";
+  document.getElementById("fid").value="";
+  document.getElementById("fn").value="";
+  document.getElementById("fd").value="";
+  document.getElementById("fp").value="";
+  document.getElementById("fo").value="";
+  document.getElementById("fc").value="saree";
+  document.getElementById("fb").value="";
+  document.getElementById("fst").value="5";
+  selEm="👗"; buildEm();
 }
 function editP(id){
-  var p = null;
+  var p=null;
   for(var i=0;i<prods.length;i++){ if(prods[i].id===id){ p=prods[i]; break; } }
   if(!p) return;
   goTab(2);
-  document.getElementById("fh").textContent = "Edit Product";
-  document.getElementById("fid").value = p.id;
-  document.getElementById("fn").value = p.name;
-  document.getElementById("fd").value = p.desc;
-  document.getElementById("fp").value = p.price;
-  document.getElementById("fo").value = p.old>0?p.old:"";
-  document.getElementById("fc").value = p.cat;
-  document.getElementById("fb").value = p.badge||"";
-  document.getElementById("fst").value = p.stars;
-  selEm = p.em;
-  buildEm();
+  document.getElementById("fh").textContent="Edit Product";
+  document.getElementById("fid").value=p.id;
+  document.getElementById("fn").value=p.name;
+  document.getElementById("fd").value=p.desc;
+  document.getElementById("fp").value=p.price;
+  document.getElementById("fo").value=p.old>0?p.old:"";
+  document.getElementById("fc").value=p.cat;
+  document.getElementById("fb").value=p.badge||"";
+  document.getElementById("fst").value=p.stars;
+  selEm=p.em; buildEm();
 }
-document.getElementById("fsave").onclick = function(){
-  var name  = document.getElementById("fn").value.trim();
-  var desc  = document.getElementById("fd").value.trim();
-  var price = parseFloat(document.getElementById("fp").value);
-  var old   = parseFloat(document.getElementById("fo").value)||0;
-  var cat   = document.getElementById("fc").value;
-  var badge = document.getElementById("fb").value;
-  var stars = parseInt(document.getElementById("fst").value);
-  var fid   = document.getElementById("fid").value;
-  if(!name||!desc||isNaN(price)){ toast("Fill Name, Description and Price!"); return; }
+document.getElementById("fsave").onclick=function(){
+  var name=document.getElementById("fn").value.trim();
+  var desc=document.getElementById("fd").value.trim();
+  var price=parseFloat(document.getElementById("fp").value);
+  var old=parseFloat(document.getElementById("fo").value)||0;
+  var cat=document.getElementById("fc").value;
+  var badge=document.getElementById("fb").value;
+  var stars=parseInt(document.getElementById("fst").value);
+  var fid=document.getElementById("fid").value;
+  if(!name||!desc||isNaN(price)){ toast("⚠️ Fill Name, Description & Price!"); return; }
   if(fid){
     for(var i=0;i<prods.length;i++){
       if(prods[i].id==fid){ prods[i]={id:prods[i].id,name:name,desc:desc,cat:cat,price:price,old:old,em:selEm,badge:badge,stars:stars}; break; }
     }
-    toast("Product updated!");
+    toast("✅ Product updated successfully!");
   } else {
     prods.push({id:Date.now(),name:name,desc:desc,cat:cat,price:price,old:old,em:selEm,badge:badge,stars:stars});
-    toast("Product added!");
+    toast("✅ New product added!");
   }
   upDash(); goTab(1);
 };
-document.getElementById("fcan").onclick = function(){ goTab(1); };
+document.getElementById("fcan").onclick=function(){ goTab(1); };
 
 // DELETE
 function delP(id){
-  if(!confirm("Delete this product?")) return;
-  prods = prods.filter(function(p){ return p.id!==id; });
-  renderTbl(); upDash(); toast("Product deleted!");
+  if(!confirm("Are you sure you want to delete this product?")) return;
+  prods=prods.filter(function(p){ return p.id!==id; });
+  renderTbl(); upDash(); toast("🗑️ Product deleted!");
 }
 
 // SETTINGS
-document.getElementById("s1").onclick = function(){ toast("Store info saved!"); };
-document.getElementById("s2").onclick = function(){ toast("Payment info saved!"); };
+document.getElementById("s1").onclick=function(){ toast("✅ Store info saved!"); };
+document.getElementById("s2").onclick=function(){ toast("✅ Payment info saved!"); };
 
 // PASSWORD
-document.getElementById("pcbtn").onclick = function(){
-  var cur = document.getElementById("pc1").value.trim();
-  var nw  = document.getElementById("pc2").value.trim();
-  var con = document.getElementById("pc3").value.trim();
-  if(cur!==PW){ toast("Current password is wrong!"); return; }
-  if(nw.length<4){ toast("Password too short!"); return; }
-  if(nw!==con){ toast("Passwords do not match!"); return; }
+document.getElementById("pcbtn").onclick=function(){
+  var cur=document.getElementById("pc1").value.trim();
+  var nw=document.getElementById("pc2").value.trim();
+  var con=document.getElementById("pc3").value.trim();
+  if(cur!==PW){ toast("❌ Current password is incorrect!"); return; }
+  if(nw.length<4){ toast("⚠️ Password must be at least 4 characters!"); return; }
+  if(nw!==con){ toast("❌ Passwords do not match!"); return; }
   PW=nw;
   document.getElementById("pc1").value="";
   document.getElementById("pc2").value="";
   document.getElementById("pc3").value="";
-  toast("Password changed successfully!");
+  toast("✅ Password updated successfully!");
 };
 
 // TOAST
 function toast(msg){
-  var t = document.getElementById("toast");
-  t.textContent = msg;
-  t.className = "on";
-  setTimeout(function(){ t.className = ""; }, 2800);
+  var t=document.getElementById("toast");
+  t.innerHTML=msg; t.className="on";
+  setTimeout(function(){ t.className=""; },3000);
 }
 </script>
 </body>
