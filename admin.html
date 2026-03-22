@@ -489,6 +489,11 @@ tr:hover td{background:var(--gray6)}
                 <div class="ff" style="margin-bottom:14px"><label>Free Shipping Above (₹)</label><input type="number" value="1999"></div>
                 <div class="ff" style="margin-bottom:20px"><label>Estimated Delivery (Days)</label><input type="number" value="5"></div>
                 <button class="btn-primary btn-sm" id="s2">Save Changes</button>
+              <div style="margin-top:16px;padding:12px;background:var(--g8);border-radius:10px;border:1px solid var(--border);">
+                <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--g3);margin-bottom:6px;">☁️ Cloud Sync ID</div>
+                <div id="syncIdDisplay" style="font-size:0.8rem;color:var(--gray2);font-family:monospace;word-break:break-all;">Loading...</div>
+                <div style="font-size:0.72rem;color:var(--gray3);margin-top:6px;">Share this ID with your customer store to sync products</div>
+              </div>
               </div>
             </div>
           </div>
@@ -539,23 +544,86 @@ function loadProds() {
     var saved = localStorage.getItem(STORE_KEY);
     if (saved) {
       var parsed = JSON.parse(saved);
-      // Verify it's valid and has items
       if (Array.isArray(parsed) && parsed.length > 0) return parsed;
     }
   } catch(e) {}
-  // No saved data — use MASTER and save it immediately
   var master = JSON.parse(JSON.stringify(MASTER_PRODS));
   try { localStorage.setItem(STORE_KEY, JSON.stringify(master)); } catch(e) {}
   return master;
 }
 
-// ── SAVE TO STORAGE + UPDATE MASTER ──────────────────────────────
+// ── LOAD FROM JSONBIN ON STARTUP ─────────────────────────────────
+function syncFromDB() {
+  var binId = localStorage.getItem("TV_BIN_ID") || "";
+  if (!binId) return; // No bin yet
+  fetch("https://api.jsonbin.io/v3/b/" + binId + "/latest", {
+    headers: { "X-Master-Key": "$2a$10$TrendVibesKey2026Store" }
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (res.record && res.record.products && res.record.products.length > 0) {
+      prods = res.record.products;
+      localStorage.setItem(STORE_KEY, JSON.stringify(prods));
+      MASTER_PRODS = JSON.parse(JSON.stringify(prods));
+      renderTbl(); upDash();
+      showSyncStatus("🔄 Products synced from cloud!");
+    }
+  })
+  .catch(() => {}); // Silent fail
+}
+
+// ── SAVE TO STORAGE + JSONBIN + UPDATE MASTER ───────────────────
 function saveProds() {
   try {
     localStorage.setItem(STORE_KEY, JSON.stringify(prods));
-    // Also update MASTER_PRODS in memory so refresh keeps data
     MASTER_PRODS = JSON.parse(JSON.stringify(prods));
   } catch(e) {}
+  // Save to JSONBin for cross-device sync
+  saveToDB(prods);
+}
+
+function saveToDB(data) {
+  var binId = localStorage.getItem("TV_BIN_ID") || "";
+  var apiKey = "$2a$10$TrendVibesKey2026Store";
+  if (!binId) {
+    // Create new bin
+    fetch("https://api.jsonbin.io/v3/b", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Master-Key": apiKey,
+        "X-Bin-Name": "trendvibes-products",
+        "X-Bin-Private": "false"
+      },
+      body: JSON.stringify({products: data})
+    })
+    .then(r => r.json())
+    .then(res => {
+      if (res.metadata && res.metadata.id) {
+        localStorage.setItem("TV_BIN_ID", res.metadata.id);
+        localStorage.setItem("TV_BIN_ID_SHARED", res.metadata.id);
+        showSyncStatus("✅ Saved & synced to all devices!");
+      }
+    })
+    .catch(() => showSyncStatus("⚠️ Saved locally only"));
+  } else {
+    // Update existing bin
+    fetch("https://api.jsonbin.io/v3/b/" + binId, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Master-Key": apiKey
+      },
+      body: JSON.stringify({products: data})
+    })
+    .then(r => r.json())
+    .then(() => showSyncStatus("✅ Saved & synced to all devices!"))
+    .catch(() => showSyncStatus("⚠️ Saved locally only"));
+  }
+}
+
+function showSyncStatus(msg) {
+  toast(msg);
 }
 var prods = loadProds();
 var imgData = ""; // stores base64 or URL
@@ -626,6 +694,7 @@ function login(){
     document.getElementById("loginPage").style.display = "none";
     document.getElementById("adminPage").style.display = "block";
     upDash(); renderTbl(); buildEm();
+    setTimeout(syncFromDB, 500); // Sync from cloud on login
   } else {
     document.getElementById("lerr").style.display = "block";
     document.getElementById("pwin").value = "";
