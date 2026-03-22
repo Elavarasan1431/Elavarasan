@@ -521,8 +521,8 @@ var PW = "admin123";
 // ── STORAGE KEY ──────────────────────────
 var STORE_KEY = "trendvibes_products";
 
-// ── DEFAULT PRODUCTS ─────────────────────
-var DEFAULT_PRODS = [
+// ── MASTER PRODUCTS (edit this array to permanently set products) ──
+var MASTER_PRODS = [
   {id:1,name:"Kanjivaram Silk",desc:"Traditional Silk Saree",cat:"saree",price:2499,old:0,em:"🥻",badge:"new",stars:5,img:""},
   {id:2,name:"Banarasi Weave",desc:"Handwoven Banarasi Saree",cat:"saree",price:3299,old:0,em:"🥻",badge:"hot",stars:5,img:""},
   {id:3,name:"Floral Crop Top",desc:"Casual Summer Top",cat:"top",price:499,old:0,em:"👘",badge:"new",stars:4,img:""},
@@ -533,17 +533,29 @@ var DEFAULT_PRODS = [
   {id:8,name:"Graphic Printed Tee",desc:"Casual Graphic T-Shirt",cat:"tshirts",price:399,old:0,em:"🌼",badge:"new",stars:4,img:""}
 ];
 
-// ── LOAD FROM STORAGE ─────────────────────
+// ── LOAD: localStorage first, fallback to MASTER ──────────────────
 function loadProds() {
   try {
     var saved = localStorage.getItem(STORE_KEY);
-    return saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_PRODS));
-  } catch(e) { return JSON.parse(JSON.stringify(DEFAULT_PRODS)); }
+    if (saved) {
+      var parsed = JSON.parse(saved);
+      // Verify it's valid and has items
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch(e) {}
+  // No saved data — use MASTER and save it immediately
+  var master = JSON.parse(JSON.stringify(MASTER_PRODS));
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(master)); } catch(e) {}
+  return master;
 }
 
-// ── SAVE TO STORAGE ───────────────────────
+// ── SAVE TO STORAGE + UPDATE MASTER ──────────────────────────────
 function saveProds() {
-  try { localStorage.setItem(STORE_KEY, JSON.stringify(prods)); } catch(e) {}
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify(prods));
+    // Also update MASTER_PRODS in memory so refresh keeps data
+    MASTER_PRODS = JSON.parse(JSON.stringify(prods));
+  } catch(e) {}
 }
 var prods = loadProds();
 var imgData = ""; // stores base64 or URL
@@ -741,13 +753,13 @@ document.getElementById("fsave").onclick=function(){
       if(prods[i].id==fid){ prods[i]={id:prods[i].id,name:name,desc:desc,cat:cat,price:price,old:old,em:selEm,badge:badge,stars:stars,img:img}; break; }
     }
     saveProds();
-    toast("✅ Product updated successfully!");
+    toast("✅ Product updated!");
   } else {
     prods.push({id:Date.now(),name:name,desc:desc,cat:cat,price:price,old:old,em:selEm,badge:badge,stars:stars,img:img});
     saveProds();
     toast("✅ New product added!");
   }
-  upDash(); goTab(1);
+  upDash(); goTab(1); showExportReminder();
 };
 document.getElementById("fcan").onclick=function(){ goTab(1); };
 
@@ -778,11 +790,58 @@ document.getElementById("pcbtn").onclick=function(){
 };
 
 // TOAST
+// ── EXPORT REMINDER ──────────────────────────────────────────────
+function showExportReminder() {
+  var banner = document.getElementById('exportBanner');
+  if (banner) banner.style.display = 'flex';
+}
+
+function hideExportBanner() {
+  var banner = document.getElementById('exportBanner');
+  if (banner) banner.style.display = 'none';
+}
+
+function exportUpdatedFile() {
+  // Generate updated admin.html with new MASTER_PRODS embedded
+  var currentData = JSON.stringify(prods, null, 2);
+  var blob = new Blob([generateUpdatedHTML(currentData)], {type: 'text/html'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'admin.html';
+  a.click();
+  URL.revokeObjectURL(url);
+  hideExportBanner();
+  toast("✅ admin.html downloaded! Upload to GitHub to save permanently.");
+}
+
+function generateUpdatedHTML(prodData) {
+  var html = document.documentElement.outerHTML;
+  var newMaster = "var MASTER_PRODS = " + prodData + ";";
+  html = html.replace(/var MASTER_PRODS = \[[\s\S]*?\];/, newMaster);
+  return "<!DOCTYPE html>" + "\n" + html;
+}
+
 function toast(msg){
   var t=document.getElementById("toast");
   t.innerHTML=msg; t.className="on";
   setTimeout(function(){ t.className=""; },3000);
 }
 </script>
+<!-- EXPORT REMINDER BANNER -->
+<div id="exportBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:linear-gradient(135deg,#064e3b,#047857);color:#fff;padding:14px 24px;z-index:9999;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span style="font-size:1.4rem;">⚠️</span>
+    <div>
+      <div style="font-family:'Inter',sans-serif;font-weight:700;font-size:0.9rem;">Products saved in this browser only!</div>
+      <div style="font-family:'Inter',sans-serif;font-size:0.78rem;opacity:0.85;">Download & upload to GitHub to save permanently on all devices.</div>
+    </div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <button onclick="exportUpdatedFile()" style="background:#fff;color:#064e3b;border:none;border-radius:8px;padding:10px 20px;font-family:'Inter',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;">⬇️ Download Updated admin.html</button>
+    <button onclick="hideExportBanner()" style="background:rgba(255,255,255,0.2);color:#fff;border:none;border-radius:8px;padding:10px 16px;font-family:'Inter',sans-serif;font-size:0.82rem;cursor:pointer;">✕ Later</button>
+  </div>
+</div>
+
 </body>
 </html>
