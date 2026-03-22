@@ -647,7 +647,7 @@
 <!-- HERO -->
 <section class="hero">
   <div class="hero-content">
-    <div class="hero-eyebrow"><span class="edot"></span> New Summer Drop 2025</div>
+    <div class="hero-eyebrow"><span class="edot"></span> New Summer Drop 2026</div>
     <h1 class="hero-title">
       Style That<br>
       <em>Speaks <span class="hl">Loud</span></em>
@@ -684,13 +684,13 @@
     <span class="m-item"><span class="m-gem">✦</span> Trend Vibes Fashion Store</span>
     <span class="m-item"><span class="m-gem">✦</span> Free Shipping Over ₹1,999</span>
     <span class="m-item"><span class="m-gem">✦</span> New Arrivals Daily</span>
-    <span class="m-item"><span class="m-gem">✦</span> GPay · Debit / Credit Card</span>
+    <span class="m-item"><span class="m-gem">✦</span> GPay · UPI Payments</span>
     <span class="m-item"><span class="m-gem">✦</span> Dresses & Tops Collection</span>
     <span class="m-item"><span class="m-gem">✦</span> Easy Returns Always</span>
     <span class="m-item"><span class="m-gem">✦</span> Trend Vibes Fashion Store</span>
     <span class="m-item"><span class="m-gem">✦</span> Free Shipping Over ₹1,999</span>
     <span class="m-item"><span class="m-gem">✦</span> New Arrivals Daily</span>
-    <span class="m-item"><span class="m-gem">✦</span> GPay · Debit / Credit Card</span>
+    <span class="m-item"><span class="m-gem">✦</span> GPay · UPI Payments</span>
     <span class="m-item"><span class="m-gem">✦</span> Dresses & Skirts Collection</span>
     <span class="m-item"><span class="m-gem">✦</span> Easy Returns Always</span>
   </div>
@@ -755,14 +755,7 @@
       <div class="pay-desc">Fast & secure checkout with your Google account. One tap and you're done!</div>
       <span class="pay-badge">Instant</span>
     </div>
-    <div class="pay-card" onclick="openCheckout('card')">
-      <span class="pay-icon">💳</span>
-      <div class="pay-name">Debit / Credit Card</div>
-      <div class="pay-desc">Pay securely with Visa, Mastercard, or any major card. 100% encrypted.</div>
-      <span class="pay-badge">Secure</span>
     </div>
-
-  </div>
 </section>
 
 <!-- CHECKOUT MODAL -->
@@ -781,21 +774,13 @@
         </div>
         <div class="pay-radio"><div class="pay-radio-dot"></div></div>
       </div>
-      <div class="pay-method" onclick="selectPay(this,'card')" data-method="card">
-        <span class="pay-method-icon">💳</span>
-        <div class="pay-method-info">
-          <div class="pay-method-name">Debit / Credit Card</div>
-          <div class="pay-method-hint">Visa, Mastercard & more</div>
-        </div>
+      </div>
         <div class="pay-radio"><div class="pay-radio-dot"></div></div>
       </div>
 
     </div>
 
-    <!-- Card fields -->
-    <div id="cardFields" style="display:none">
-      <div class="form-row full"><div class="form-field"><label class="form-label">Cardholder Name</label><input class="form-input" placeholder="Jane Smith"></div></div>
-      <div class="form-row full"><div class="form-field"><label class="form-label">Card Number</label><input class="form-input" placeholder="1234 5678 9012 3456" maxlength="19"></div></div>
+          <div class="form-row full"><div class="form-field"><label class="form-label">Card Number</label><input class="form-input" placeholder="1234 5678 9012 3456" maxlength="19"></div></div>
       <div class="form-row">
         <div class="form-field"><label class="form-label">Expiry Date</label><input class="form-input" placeholder="MM / YY" maxlength="7"></div>
         <div class="form-field"><label class="form-label">CVV</label><input class="form-input" placeholder="•••" maxlength="3"></div>
@@ -919,7 +904,7 @@
     </div>
   </div>
   <div class="footer-bottom">
-    <span class="f-copy">© 2025 Trend Vibes Fashion Store. All rights reserved. | <a href="https://www.trendvibes.com" style="color:var(--gold-light);text-decoration:none;">www.trendvibes.com</a></span>
+    <span class="f-copy">© 2026 Trend Vibes Fashion Store. All rights reserved. | <a href="https://www.trendvibes.com" style="color:var(--gold-light);text-decoration:none;">www.trendvibes.com</a></span>
     <div class="f-pay-icons">
       <span class="f-pay-icon">📱 GPay</span>
       <span class="f-pay-icon">💳 Card</span>
@@ -947,31 +932,62 @@ var DEFAULT_PRODUCTS = [
   { id:8, name:'Graphic Printed Tee',sub:'Casual Graphic T-Shirt',    cat:'tshirts', price:399,  emoji:'🌼', badge:'new',  stars:'★★★★☆', img:'' }
 ];
 
+// ── CONVERT ADMIN FORMAT TO STORE FORMAT ─────────────────────────
+function convertProds(adminProds) {
+  return adminProds.map(function(p) {
+    return {
+      id: p.id,
+      name: p.name,
+      sub: p.desc || p.sub || '',
+      cat: p.cat,
+      price: p.price,
+      oldPrice: p.old > 0 ? p.old : undefined,
+      emoji: p.em || p.emoji || '👗',
+      badge: p.badge || null,
+      stars: p.stars ? (typeof p.stars === 'number' ? '★'.repeat(p.stars) + '☆'.repeat(5-p.stars) : p.stars) : '★★★★★',
+      img: p.img || ''
+    };
+  });
+}
+
 // ── LOAD FROM LOCALSTORAGE ────────────────
 function loadFromStorage() {
   try {
     var saved = localStorage.getItem(STORE_KEY);
     if (!saved) return DEFAULT_PRODUCTS;
     var adminProds = JSON.parse(saved);
-    // Convert admin format to customer format
-    return adminProds.map(function(p) {
-      return {
-        id: p.id,
-        name: p.name,
-        sub: p.desc || p.sub || '',
-        cat: p.cat,
-        price: p.price,
-        oldPrice: p.old > 0 ? p.old : undefined,
-        emoji: p.em || p.emoji || '👗',
-        badge: p.badge || null,
-        stars: p.stars ? (typeof p.stars === 'number' ? '★'.repeat(p.stars) + '☆'.repeat(5-p.stars) : p.stars) : '★★★★★',
-        img: p.img || ''
-      };
-    });
-  } catch(e) { return DEFAULT_PRODUCTS; }
+    if (Array.isArray(adminProds) && adminProds.length > 0)
+      return convertProds(adminProds);
+  } catch(e) {}
+  return DEFAULT_PRODUCTS;
 }
 
 var products = loadFromStorage();
+
+// ── LOAD FROM JSONBIN (cloud sync) ────────────────────────────────
+function loadFromCloud() {
+  var binId = localStorage.getItem("TV_BIN_ID") || "";
+  if (!binId) return; // No bin ID yet
+  fetch("https://api.jsonbin.io/v3/b/" + binId + "/latest", {
+    headers: { "X-Master-Key": "$2a$10$TrendVibesKey2026Store" }
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(res) {
+    if (res.record && res.record.products && res.record.products.length > 0) {
+      products = convertProds(res.record.products);
+      localStorage.setItem(STORE_KEY, JSON.stringify(res.record.products));
+      renderProducts('all');
+      document.querySelectorAll('.pill').forEach(function(b) { b.classList.remove('active'); });
+      document.querySelector('.pill').classList.add('active');
+    }
+  })
+  .catch(function() {}); // Silent fail - use local data
+}
+
+// Load from cloud when page opens
+window.addEventListener('load', function() {
+  setTimeout(loadFromCloud, 800);
+});
 
 let cart = [];
 
@@ -1104,13 +1120,13 @@ function selectPayMethod(method) {
   document.querySelectorAll('.pay-method').forEach(m => {
     m.classList.toggle('selected', m.dataset.method === method);
   });
-  document.getElementById('cardFields').style.display = method === 'card' ? 'block' : 'none';
-  document.getElementById('gpayFields').style.display = method === 'gpay' ? 'block' : 'none';
+  
+  
 
 }
 
 function placeOrder() {
-  const names = { gpay: 'Google Pay', card: 'Card' };
+  const names = { gpay: 'Google Pay' };
   toast(`🎉 Order placed via ${names[currentMethod]}! Thank you!`);
   closeCheckout();
   cart = [];
