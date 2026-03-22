@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trend Vibes — Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --green:      #1e8449;
+    --green-deep: #145a32;
+    --green-pale: #d5f0e0;
+    --green-frost:#f0faf4;
+    --pink:       #e0648a;
+    --pink-deep:  #a93060;
+    --pink-pale:  #fce4ed;
+    --white:      #ffffff;
+    --off:        #f8fdfb;
+    --dark:       #1a2e1f;
+    --mid:        #3a5a44;
+    --soft:       #6b8f76;
+    --border:     #b8e8cc;
+  }
+  body { font-family:'Barlow',sans-serif; background:var(--off); color:var(--dark); min-height:100vh; }
+
+  /* ── LOGIN SCREEN ── */
+  .login-screen {
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    background: linear-gradient(135deg, var(--green-frost) 0%, var(--pink-pale) 100%);
+  }
+  .login-card {
+    background:var(--white); border-radius:24px; padding:48px 40px;
+    width:100%; max-width:400px;
+    border:1.5px solid var(--border);
+  }
+  .login-logo {
+    font-family:'Bebas Neue',sans-serif; font-size:2.2rem;
+    letter-spacing:0.1em; text-align:center; margin-bottom:6px;
+  }
+  .login-logo span { color:var(--pink); }
+  .login-sub { text-align:center; font-size:0.82rem; color:var(--soft); margin-bottom:32px; font-family:'Barlow Condensed',sans-serif; letter-spacing:0.15em; text-transform:uppercase; }
+  .login-label { font-family:'Barlow Condensed',sans-serif; font-size:0.78rem; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:var(--mid); display:block; margin-bottom:8px; }
+  .login-input {
+    width:100%; border:1.5px solid var(--border); border-radius:10px;
+    padding:13px 16px; font-family:'Barlow',sans-serif; font-size:1rem;
+    color:var(--dark); outline:none; margin-bottom:20px;
+    transition:border-color 0.2s;
+  }
+  .login-input:focus { border-color:var(--green); }
+  .login-btn {
+    width:100%; background:linear-gradient(135deg, var(--green), var(--pink));
+    color:var(--white); border:none; border-radius:10px; padding:15px;
+    font-family:'Barlow Condensed',sans-serif; font-size:1.1rem;
+    font-weight:800; letter-spacing:0.15em; text-transform:uppercase;
+    cursor:pointer; transition:opacity 0.2s;
+  }
+  .login-btn:hover { opacity:0.9; }
+  .login-error {
+    background:#fce4ed; border:1px solid var(--pink); border-radius:8px;
+    padding:10px 14px; font-size:0.85rem; color:var(--pink-deep);
+    margin-bottom:16px; display:none; text-align:center;
+  }
+
+  /* ── ADMIN PANEL ── */
+  .admin-wrap { display:none; min-height:100vh; }
+
+  /* Top bar */
+  .topbar {
+    background:linear-gradient(90deg, var(--green-deep), var(--green));
+    color:var(--white); padding:0 32px; height:64px;
+    display:flex; align-items:center; justify-content:space-between;
+    position:sticky; top:0; z-index:100;
+  }
+  .topbar-logo { font-family:'Bebas Neue',sans-serif; font-size:1.8rem; letter-spacing:0.1em; }
+  .topbar-logo span { color:var(--pink); }
+  .topbar-right { display:flex; align-items:center; gap:16px; }
+  .topbar-badge { background:rgba(255,255,255,0.15); border-radius:50px; padding:5px 14px; font-family:'Barlow Condensed',sans-serif; font-size:0.78rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; }
+  .logout-btn {
+    background:var(--pink); color:var(--white); border:none; border-radius:8px;
+    padding:8px 18px; font-family:'Barlow Condensed',sans-serif; font-size:0.85rem;
+    font-weight:800; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer;
+  }
+
+  /* Layout */
+  .admin-body { display:grid; grid-template-columns:220px 1fr; min-height:calc(100vh - 64px); }
+
+  /* Sidebar */
+  .sidebar {
+    background:var(--white); border-right:1.5px solid var(--border);
+    padding:24px 0;
+  }
+  .sidebar-section { font-family:'Barlow Condensed',sans-serif; font-size:0.7rem; font-weight:800; letter-spacing:0.2em; text-transform:uppercase; color:var(--soft); padding:0 20px; margin:20px 0 8px; }
+  .sidebar-item {
+    display:flex; align-items:center; gap:10px;
+    padding:11px 20px; cursor:pointer; transition:all 0.2s;
+    font-family:'Barlow Condensed',sans-serif; font-size:0.95rem;
+    font-weight:700; letter-spacing:0.05em; color:var(--mid);
+    border-left:3px solid transparent;
+  }
+  .sidebar-item:hover { background:var(--green-frost); color:var(--green); }
+  .sidebar-item.active { background:var(--green-frost); color:var(--green); border-left-color:var(--green); }
+  .sidebar-item span { font-size:1.1rem; }
+
+  /* Content */
+  .content { padding:32px; background:var(--off); }
+  .page { display:none; }
+  .page.active { display:block; }
+
+  .page-title { font-family:'Bebas Neue',sans-serif; font-size:2.2rem; letter-spacing:0.06em; color:var(--dark); margin-bottom:6px; }
+  .page-sub { font-size:0.88rem; color:var(--soft); margin-bottom:28px; }
+
+  /* Stats cards */
+  .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:32px; }
+  .stat-card { background:var(--white); border:1.5px solid var(--border); border-radius:16px; padding:20px 24px; }
+  .stat-icon { font-size:1.8rem; margin-bottom:8px; }
+  .stat-val { font-family:'Bebas Neue',sans-serif; font-size:2rem; color:var(--green); letter-spacing:0.04em; }
+  .stat-lbl { font-family:'Barlow Condensed',sans-serif; font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--soft); margin-top:2px; }
+
+  /* Products table */
+  .card { background:var(--white); border:1.5px solid var(--border); border-radius:16px; overflow:hidden; margin-bottom:24px; }
+  .card-head { padding:18px 24px; border-bottom:1.5px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+  .card-title { font-family:'Bebas Neue',sans-serif; font-size:1.4rem; letter-spacing:0.06em; color:var(--dark); }
+
+  table { width:100%; border-collapse:collapse; }
+  th { font-family:'Barlow Condensed',sans-serif; font-size:0.75rem; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:var(--soft); padding:12px 16px; text-align:left; background:var(--green-frost); border-bottom:1.5px solid var(--border); }
+  td { padding:14px 16px; border-bottom:1px solid var(--border); font-size:0.9rem; color:var(--dark); vertical-align:middle; }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:var(--green-frost); }
+
+  .badge { display:inline-block; border-radius:50px; padding:3px 12px; font-family:'Barlow Condensed',sans-serif; font-size:0.72rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; }
+  .badge-new  { background:linear-gradient(135deg,var(--green),#3da066); color:var(--white); }
+  .badge-sale { background:linear-gradient(135deg,#e05c7a,var(--pink)); color:var(--white); }
+  .badge-hot  { background:linear-gradient(135deg,var(--pink),#f093b0); color:var(--white); }
+  .badge-none { background:var(--green-pale); color:var(--green); }
+
+  .action-btn {
+    border:none; border-radius:6px; padding:6px 14px;
+    font-family:'Barlow Condensed',sans-serif; font-size:0.8rem;
+    font-weight:800; letter-spacing:0.08em; text-transform:uppercase;
+    cursor:pointer; transition:opacity 0.2s; margin-right:6px;
+  }
+  .btn-edit { background:var(--green-pale); color:var(--green-deep); }
+  .btn-del  { background:var(--pink-pale);  color:var(--pink-deep); }
+  .btn-edit:hover, .btn-del:hover { opacity:0.75; }
+
+  /* Add/Edit product form */
+  .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; padding:24px; }
+  .form-grid.full-row { grid-column:span 2; }
+  .field { display:flex; flex-direction:column; gap:6px; }
+  .field.full { grid-column:span 2; }
+  .flabel { font-family:'Barlow Condensed',sans-serif; font-size:0.78rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; color:var(--mid); }
+  .finput, .fselect {
+    border:1.5px solid var(--border); border-radius:10px;
+    padding:11px 14px; font-family:'Barlow',sans-serif;
+    font-size:0.9rem; color:var(--dark); outline:none; background:var(--off);
+    transition:border-color 0.2s;
+  }
+  .finput:focus, .fselect:focus { border-color:var(--green); background:var(--white); }
+
+  .emoji-grid { display:flex; flex-wrap:wrap; gap:8px; }
+  .emoji-opt {
+    width:40px; height:40px; border-radius:8px; border:2px solid var(--border);
+    background:var(--white); display:flex; align-items:center; justify-content:center;
+    font-size:1.3rem; cursor:pointer; transition:all 0.2s;
+  }
+  .emoji-opt.sel { border-color:var(--green); background:var(--green-frost); }
+
+  .form-actions { padding:0 24px 24px; display:flex; gap:12px; }
+  .save-btn {
+    background:linear-gradient(135deg,var(--green),var(--pink));
+    color:var(--white); border:none; border-radius:10px; padding:13px 32px;
+    font-family:'Barlow Condensed',sans-serif; font-size:1rem;
+    font-weight:800; letter-spacing:0.12em; text-transform:uppercase; cursor:pointer;
+  }
+  .cancel-btn {
+    background:var(--off); color:var(--mid); border:1.5px solid var(--border);
+    border-radius:10px; padding:13px 24px;
+    font-family:'Barlow Condensed',sans-serif; font-size:1rem;
+    font-weight:700; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer;
+  }
+
+  /* Store settings */
+  .settings-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .setting-card { background:var(--white); border:1.5px solid var(--border); border-radius:16px; padding:24px; }
+  .setting-title { font-family:'Bebas Neue',sans-serif; font-size:1.3rem; letter-spacing:0.06em; color:var(--dark); margin-bottom:16px; }
+
+  /* Toast */
+  .toast {
+    position:fixed; bottom:28px; left:50%;
+    transform:translateX(-50%) translateY(80px);
+    background:var(--green-deep); color:var(--white);
+    border-radius:50px; padding:13px 28px;
+    font-family:'Barlow Condensed',sans-serif; font-size:0.95rem;
+    font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+    z-index:999; white-space:nowrap;
+    transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .toast.show { transform:translateX(-50%) translateY(0); }
+
+  /* Responsive */
+  @media(max-width:768px) {
+    .admin-body { grid-template-columns:1fr; }
+    .sidebar { display:none; }
+    .stats-grid { grid-template-columns:1fr 1fr; }
+    .settings-grid { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN SCREEN ══════════════════════════════════════ -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">Trend<span>Vibes</span></div>
+    <div class="login-sub">Admin Panel — Secure Login</div>
+    <div class="login-error" id="loginError">❌ Wrong password. Try again!</div>
+    <label class="login-label">Admin Password</label>
+    <input class="login-input" type="password" id="pwInput" placeholder="Enter your password" onkeydown="if(event.key==='Enter') doLogin()">
+    <button class="login-btn" onclick="doLogin()">🔐 Login to Admin</button>
+  </div>
+</div>
+
+<!-- ══ ADMIN PANEL ════════════════════════════════════════ -->
+<div class="admin-wrap" id="adminWrap">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="topbar-logo">Trend<span>Vibes</span> <span style="font-size:0.9rem;opacity:0.6;letter-spacing:0.2em;font-family:'Barlow Condensed',sans-serif;font-weight:700;">ADMIN</span></div>
+    <div class="topbar-right">
+      <span class="topbar-badge">🌿 Store: Live</span>
+      <a href="index.html" target="_blank" style="color:white;font-family:'Barlow Condensed',sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;background:rgba(255,255,255,0.15);border-radius:8px;padding:8px 16px;">🌐 View Store</a>
+      <button class="logout-btn" onclick="doLogout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="admin-body">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-section">Main</div>
+      <div class="sidebar-item active" onclick="showPage('dashboard',this)"><span>📊</span> Dashboard</div>
+      <div class="sidebar-item" onclick="showPage('products',this)"><span>👗</span> Products</div>
+      <div class="sidebar-item" onclick="showPage('addProduct',this)"><span>➕</span> Add Product</div>
+      <div class="sidebar-section">Store</div>
+      <div class="sidebar-item" onclick="showPage('settings',this)"><span>⚙️</span> Store Settings</div>
+      <div class="sidebar-item" onclick="showPage('shipping',this)"><span>🚚</span> Shipping</div>
+      <div class="sidebar-section">Account</div>
+      <div class="sidebar-item" onclick="showPage('password',this)"><span>🔐</span> Change Password</div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="page-title">Dashboard</div>
+        <div class="page-sub">Welcome back, Elavarasan! Here's your store overview.</div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">👗</div>
+            <div class="stat-val" id="totalProducts">8</div>
+            <div class="stat-lbl">Total Products</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🥻</div>
+            <div class="stat-val" id="totalSaree">0</div>
+            <div class="stat-lbl">Sarees</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">👚</div>
+            <div class="stat-val" id="totalTops">0</div>
+            <div class="stat-lbl">Tops & T-Shirts</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🌐</div>
+            <div class="stat-val" style="font-size:1.1rem;padding-top:6px;">LIVE</div>
+            <div class="stat-lbl">Store Status</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><span class="card-title">Quick Actions</span></div>
+          <div style="padding:24px;display:flex;gap:14px;flex-wrap:wrap;">
+            <button class="save-btn" onclick="showPage('addProduct', document.querySelector('[onclick*=addProduct]'))">➕ Add New Product</button>
+            <button class="save-btn" style="background:linear-gradient(135deg,var(--pink),#f093b0);" onclick="showPage('products', document.querySelector('[onclick*=products]'))">📋 Manage Products</button>
+            <a href="index.html" target="_blank"><button class="cancel-btn">🌐 View Live Store</button></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRODUCTS -->
+      <div class="page" id="page-products">
+        <div class="page-title">Manage Products</div>
+        <div class="page-sub">Edit or delete your store products below.</div>
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">All Products</span>
+            <button class="save-btn" style="padding:8px 20px;font-size:0.85rem;" onclick="showPage('addProduct',document.querySelector('[onclick*=addProduct]'))">➕ Add Product</button>
+          </div>
+          <table id="productsTable"></table>
+        </div>
+      </div>
+
+      <!-- ADD / EDIT PRODUCT -->
+      <div class="page" id="page-addProduct">
+        <div class="page-title" id="formTitle">Add New Product</div>
+        <div class="page-sub">Fill in the details below to add a product to your store.</div>
+        <div class="card">
+          <input type="hidden" id="editId" value="">
+          <div class="form-grid">
+            <div class="field">
+              <label class="flabel">Product Name</label>
+              <input class="finput" id="f_name" placeholder="e.g. Kanjivaram Silk">
+            </div>
+            <div class="field">
+              <label class="flabel">Description</label>
+              <input class="finput" id="f_sub" placeholder="e.g. Traditional Silk Saree">
+            </div>
+            <div class="field">
+              <label class="flabel">Price (₹)</label>
+              <input class="finput" type="number" id="f_price" placeholder="e.g. 2499">
+            </div>
+            <div class="field">
+              <label class="flabel">Old Price (₹) — optional</label>
+              <input class="finput" type="number" id="f_old" placeholder="Leave blank if no sale">
+            </div>
+            <div class="field">
+              <label class="flabel">Category</label>
+              <select class="fselect" id="f_cat">
+                <option value="saree">🥻 Saree</option>
+                <option value="top">👘 Top</option>
+                <option value="skirts">👗 Skirts</option>
+                <option value="tshirts">👚 T-Shirts</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="flabel">Badge</label>
+              <select class="fselect" id="f_badge">
+                <option value="">None</option>
+                <option value="new">New In</option>
+                <option value="sale">Sale</option>
+                <option value="hot">🔥 Hot</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label class="flabel">Star Rating</label>
+              <select class="fselect" id="f_stars">
+                <option value="★★★★★">★★★★★ (5 Stars)</option>
+                <option value="★★★★☆">★★★★☆ (4 Stars)</option>
+                <option value="★★★☆☆">★★★☆☆ (3 Stars)</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label class="flabel">Product Icon / Emoji</label>
+              <div class="emoji-grid" id="emojiGrid"></div>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="save-btn" onclick="saveProduct()">💾 Save Product</button>
+            <button class="cancel-btn" onclick="showPage('products',document.querySelector('[onclick*=products]'))">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="page" id="page-settings">
+        <div class="page-title">Store Settings</div>
+        <div class="page-sub">Manage your store details below.</div>
+        <div class="settings-grid">
+          <div class="setting-card">
+            <div class="setting-title">🏪 Store Info</div>
+            <div class="field" style="margin-bottom:14px;">
+              <label class="flabel">Store Name</label>
+              <input class="finput" value="Trend Vibes" id="s_name">
+            </div>
+            <div class="field" style="margin-bottom:14px;">
+              <label class="flabel">Tagline</label>
+              <input class="finput" value="Fashion Store" id="s_tagline">
+            </div>
+            <div class="field" style="margin-bottom:20px;">
+              <label class="flabel">Website URL</label>
+              <input class="finput" value="www.trendvibes.com" id="s_url">
+            </div>
+            <button class="save-btn" onclick="toast('✅ Store info saved!')">Save Changes</button>
+          </div>
+          <div class="setting-card">
+            <div class="setting-title">💳 Payment Info</div>
+            <div class="field" style="margin-bottom:14px;">
+              <label class="flabel">UPI ID</label>
+              <input class="finput" value="methalelavarasan-1@okaxis" id="s_upi">
+            </div>
+            <div class="field" style="margin-bottom:14px;">
+              <label class="flabel">Payment Methods</label>
+              <input class="finput" value="GPay, Debit/Credit Card" readonly style="background:#f5f5f5;">
+            </div>
+            <div class="field" style="margin-bottom:20px;">
+              <label class="flabel">Free Shipping Above (₹)</label>
+              <input class="finput" type="number" value="1999" id="s_ship">
+            </div>
+            <button class="save-btn" onclick="toast('✅ Payment info saved!')">Save Changes</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SHIPPING -->
+      <div class="page" id="page-shipping">
+        <div class="page-title">Shipping Settings</div>
+        <div class="page-sub">Manage delivery & shipping details.</div>
+        <div class="card">
+          <div class="form-grid">
+            <div class="field">
+              <label class="flabel">Free Shipping Amount (₹)</label>
+              <input class="finput" type="number" value="1999">
+            </div>
+            <div class="field">
+              <label class="flabel">Estimated Delivery Days</label>
+              <input class="finput" type="number" value="5">
+            </div>
+            <div class="field full">
+              <label class="flabel">Shipping Note (shown to customers)</label>
+              <input class="finput" value="Free shipping on orders over ₹1,999!">
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="save-btn" onclick="toast('✅ Shipping settings saved!')">Save Changes</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHANGE PASSWORD -->
+      <div class="page" id="page-password">
+        <div class="page-title">Change Password</div>
+        <div class="page-sub">Update your admin panel password.</div>
+        <div class="card" style="max-width:440px;">
+          <div class="form-grid" style="grid-template-columns:1fr;">
+            <div class="field">
+              <label class="flabel">Current Password</label>
+              <input class="finput" type="password" id="pw_current" placeholder="Enter current password">
+            </div>
+            <div class="field">
+              <label class="flabel">New Password</label>
+              <input class="finput" type="password" id="pw_new" placeholder="Enter new password">
+            </div>
+            <div class="field">
+              <label class="flabel">Confirm New Password</label>
+              <input class="finput" type="password" id="pw_confirm" placeholder="Confirm new password">
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="save-btn" onclick="changePassword()">🔐 Update Password</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /admin-body -->
+</div><!-- /admin-wrap -->
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Password (change this to your own!) ──────────────────
+let ADMIN_PASSWORD = 'TrendVibes@2025';
+
+// ── Products data ─────────────────────────────────────────
+let products = [
+  { id:1, name:'Kanjivaram Silk',   sub:'Traditional Silk Saree',   cat:'saree',   price:2499, emoji:'🥻', badge:'new',  stars:'★★★★★' },
+  { id:2, name:'Banarasi Weave',    sub:'Handwoven Banarasi Saree',  cat:'saree',   price:3299, emoji:'🥻', badge:'hot',  stars:'★★★★★' },
+  { id:3, name:'Floral Crop Top',   sub:'Casual Summer Top',         cat:'top',     price:499,  emoji:'👘', badge:'new',  stars:'★★★★☆' },
+  { id:4, name:'Embroidered Top',   sub:'Elegant Party Wear Top',    cat:'top',     price:799,  oldPrice:1099, emoji:'✨', badge:'sale', stars:'★★★★★' },
+  { id:5, name:'Pleated Midi Skirt',sub:'Flowy Everyday Skirt',      cat:'skirts',  price:649,  emoji:'👗', badge:'new',  stars:'★★★★★' },
+  { id:6, name:'Printed Mini Skirt',sub:'Trendy Mini Skirt',         cat:'skirts',  price:549,  oldPrice:799, emoji:'🌸', badge:'sale', stars:'★★★★☆' },
+  { id:7, name:'Classic White Tee', sub:'Everyday Cotton T-Shirt',   cat:'tshirts', price:299,  emoji:'👚', badge:'hot',  stars:'★★★★★' },
+  { id:8, name:'Graphic Printed Tee',sub:'Casual Graphic T-Shirt',   cat:'tshirts', price:399,  emoji:'🌼', badge:'new',  stars:'★★★★☆' },
+];
+
+const emojis = ['🥻','👗','👘','🩱','👚','✨','🌸','🌼','🧶','💎','🌺','🎀','👙','🩳','🧥','👒','👜','🎽'];
+let selectedEmoji = '👗';
+
+// ── Login ─────────────────────────────────────────────────
+function doLogin() {
+  const pw = document.getElementById('pwInput').value;
+  if (pw === ADMIN_PASSWORD) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminWrap').style.display = 'block';
+    updateDashboard();
+    renderProductsTable();
+    buildEmojiGrid();
+  } else {
+    const err = document.getElementById('loginError');
+    err.style.display = 'block';
+    setTimeout(() => err.style.display = 'none', 3000);
+    document.getElementById('pwInput').value = '';
+  }
+}
+
+function doLogout() {
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('adminWrap').style.display = 'none';
+  document.getElementById('pwInput').value = '';
+}
+
+// ── Navigation ────────────────────────────────────────────
+function showPage(name, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  if (el) el.classList.add('active');
+  if (name === 'products') renderProductsTable();
+  if (name === 'dashboard') updateDashboard();
+  if (name === 'addProduct') resetForm();
+}
+
+// ── Dashboard stats ───────────────────────────────────────
+function updateDashboard() {
+  document.getElementById('totalProducts').textContent = products.length;
+  document.getElementById('totalSaree').textContent = products.filter(p => p.cat === 'saree').length;
+  document.getElementById('totalTops').textContent = products.filter(p => p.cat === 'top' || p.cat === 'tshirts').length;
+}
+
+// ── Products table ────────────────────────────────────────
+function renderProductsTable() {
+  const tbl = document.getElementById('productsTable');
+  const catLabel = { saree:'🥻 Saree', top:'👘 Top', skirts:'👗 Skirts', tshirts:'👚 T-Shirts' };
+  tbl.innerHTML = `
+    <thead>
+      <tr>
+        <th>Icon</th><th>Name</th><th>Category</th>
+        <th>Price</th><th>Old Price</th><th>Badge</th><th>Stars</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${products.map(p => `
+        <tr>
+          <td style="font-size:1.6rem">${p.emoji}</td>
+          <td><strong>${p.name}</strong><br><span style="color:var(--soft);font-size:0.8rem">${p.sub}</span></td>
+          <td>${catLabel[p.cat] || p.cat}</td>
+          <td style="font-weight:700;color:var(--green)">₹${p.price}</td>
+          <td style="color:var(--soft);text-decoration:line-through">${p.oldPrice ? '₹'+p.oldPrice : '—'}</td>
+          <td><span class="badge badge-${p.badge||'none'}">${p.badge||'none'}</span></td>
+          <td style="color:var(--pink)">${p.stars}</td>
+          <td>
+            <button class="action-btn btn-edit" onclick="editProduct(${p.id})">✏️ Edit</button>
+            <button class="action-btn btn-del"  onclick="deleteProduct(${p.id})">🗑 Delete</button>
+          </td>
+        </tr>`).join('')}
+    </tbody>`;
+}
+
+// ── Emoji grid ────────────────────────────────────────────
+function buildEmojiGrid() {
+  const grid = document.getElementById('emojiGrid');
+  grid.innerHTML = emojis.map(e => `
+    <div class="emoji-opt ${e===selectedEmoji?'sel':''}" onclick="pickEmoji('${e}')" id="em_${e}">${e}</div>
+  `).join('');
+}
+
+function pickEmoji(e) {
+  selectedEmoji = e;
+  emojis.forEach(em => {
+    const el = document.getElementById('em_' + em);
+    if (el) el.classList.toggle('sel', em === e);
+  });
+}
+
+// ── Add / Edit form ───────────────────────────────────────
+function resetForm() {
+  document.getElementById('formTitle').textContent = 'Add New Product';
+  document.getElementById('editId').value = '';
+  document.getElementById('f_name').value = '';
+  document.getElementById('f_sub').value = '';
+  document.getElementById('f_price').value = '';
+  document.getElementById('f_old').value = '';
+  document.getElementById('f_cat').value = 'saree';
+  document.getElementById('f_badge').value = '';
+  document.getElementById('f_stars').value = '★★★★★';
+  selectedEmoji = '👗';
+  buildEmojiGrid();
+}
+
+function editProduct(id) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  showPage('addProduct', document.querySelector('[onclick*=addProduct]'));
+  document.getElementById('formTitle').textContent = 'Edit Product';
+  document.getElementById('editId').value = id;
+  document.getElementById('f_name').value  = p.name;
+  document.getElementById('f_sub').value   = p.sub;
+  document.getElementById('f_price').value = p.price;
+  document.getElementById('f_old').value   = p.oldPrice || '';
+  document.getElementById('f_cat').value   = p.cat;
+  document.getElementById('f_badge').value = p.badge || '';
+  document.getElementById('f_stars').value = p.stars;
+  selectedEmoji = p.emoji;
+  buildEmojiGrid();
+}
+
+function saveProduct() {
+  const name  = document.getElementById('f_name').value.trim();
+  const sub   = document.getElementById('f_sub').value.trim();
+  const price = parseFloat(document.getElementById('f_price').value);
+  const old   = parseFloat(document.getElementById('f_old').value);
+  const cat   = document.getElementById('f_cat').value;
+  const badge = document.getElementById('f_badge').value || null;
+  const stars = document.getElementById('f_stars').value;
+  const editId= document.getElementById('editId').value;
+
+  if (!name || !sub || isNaN(price)) {
+    toast('⚠️ Please fill Name, Description & Price!'); return;
+  }
+
+  if (editId) {
+    const idx = products.findIndex(p => p.id == editId);
+    if (idx > -1) {
+      products[idx] = { ...products[idx], name, sub, price, oldPrice: isNaN(old)?undefined:old, cat, badge, stars, emoji: selectedEmoji };
+      toast('✅ Product updated!');
+    }
+  } else {
+    products.push({ id: Date.now(), name, sub, price, oldPrice: isNaN(old)?undefined:old, cat, badge, stars, emoji: selectedEmoji });
+    toast('✅ Product added!');
+  }
+  updateDashboard();
+  showPage('products', document.querySelector('[onclick*=\\'products\\']'));
+}
+
+function deleteProduct(id) {
+  if (!confirm('Delete this product?')) return;
+  products = products.filter(p => p.id !== id);
+  renderProductsTable();
+  updateDashboard();
+  toast('🗑 Product deleted!');
+}
+
+// ── Change Password ───────────────────────────────────────
+function changePassword() {
+  const cur  = document.getElementById('pw_current').value;
+  const nw   = document.getElementById('pw_new').value;
+  const conf = document.getElementById('pw_confirm').value;
+  if (cur !== ADMIN_PASSWORD) { toast('❌ Current password is wrong!'); return; }
+  if (nw.length < 6)           { toast('⚠️ Password must be 6+ characters!'); return; }
+  if (nw !== conf)              { toast('❌ Passwords do not match!'); return; }
+  ADMIN_PASSWORD = nw;
+  document.getElementById('pw_current').value = '';
+  document.getElementById('pw_new').value = '';
+  document.getElementById('pw_confirm').value = '';
+  toast('✅ Password changed successfully!');
+}
+
+// ── Toast ─────────────────────────────────────────────────
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+</script>
+</body>
+</html>
