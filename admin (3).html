@@ -216,8 +216,8 @@
     <div class="login-sub">Admin Panel — Secure Login</div>
     <div class="login-error" id="loginError" style="display:none;">❌ Wrong password. Try again!</div>
     <label class="login-label">Admin Password</label>
-    <input class="login-input" type="text" id="pwInput" placeholder="Enter your password">
-    <button class="login-btn" id="loginBtn">🔐 Login to Admin</button>
+    <input class="login-input" type="password" id="pwInput" placeholder="Enter your password" onkeyup="if(event.keyCode==13)doLogin();">
+    <button class="login-btn" id="loginBtn" onclick="doLogin()">🔐 Login to Admin</button>
   </div>
 </div>
 
@@ -280,8 +280,8 @@
         <div class="card">
           <div class="card-head"><span class="card-title">Quick Actions</span></div>
           <div style="padding:24px;display:flex;gap:14px;flex-wrap:wrap;">
-            <button class="save-btn" onclick="showPage('addProduct', document.querySelector('[onclick*=addProduct]'))">➕ Add New Product</button>
-            <button class="save-btn" style="background:linear-gradient(135deg,var(--pink),#f093b0);" onclick="showPage('products', document.querySelector('[onclick*=products]'))">📋 Manage Products</button>
+            <button class="save-btn" onclick="showPage('addProduct', null)">➕ Add New Product</button>
+            <button class="save-btn" style="background:linear-gradient(135deg,var(--pink),#f093b0);" onclick="showPage('products', null)">📋 Manage Products</button>
             <a href="index.html" target="_blank"><button class="cancel-btn">🌐 View Live Store</button></a>
           </div>
         </div>
@@ -294,7 +294,7 @@
         <div class="card">
           <div class="card-head">
             <span class="card-title">All Products</span>
-            <button class="save-btn" style="padding:8px 20px;font-size:0.85rem;" onclick="showPage('addProduct',document.querySelector('[onclick*=addProduct]'))">➕ Add Product</button>
+            <button class="save-btn" style="padding:8px 20px;font-size:0.85rem;" onclick="showPage('addProduct', null)">➕ Add Product</button>
           </div>
           <table id="productsTable"></table>
         </div>
@@ -356,7 +356,7 @@
           </div>
           <div class="form-actions">
             <button class="save-btn" onclick="saveProduct()">💾 Save Product</button>
-            <button class="cancel-btn" onclick="showPage('products',document.querySelector('[onclick*=products]'))">Cancel</button>
+            <button class="cancel-btn" onclick="showPage('products', null)">Cancel</button>
           </div>
         </div>
       </div>
@@ -479,27 +479,20 @@ let selectedEmoji = '👗';
 
 // ── Login ─────────────────────────────────────────────────
 function doLogin() {
-  var pw = document.getElementById('pwInput').value.trim();
-  if (pw === ADMIN_PASSWORD) {
+  var entered = document.getElementById('pwInput').value.trim();
+  var errBox  = document.getElementById('loginError');
+  if (entered === ADMIN_PASSWORD) {
     document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('adminWrap').style.display = 'block';
+    document.getElementById('adminWrap').style.display  = 'block';
     updateDashboard();
     renderProductsTable();
     buildEmojiGrid();
   } else {
-    document.getElementById('loginError').style.display = 'block';
+    errBox.style.display = 'block';
     document.getElementById('pwInput').value = '';
     document.getElementById('pwInput').focus();
   }
 }
-
-// Init — attach button click & enter key
-window.onload = function() {
-  document.getElementById('loginBtn').onclick = doLogin;
-  document.getElementById('pwInput').onkeydown = function(e) {
-    if (e.key === 'Enter') doLogin();
-  };
-};
 
 function doLogout() {
   document.getElementById('loginScreen').style.display = 'flex';
@@ -512,7 +505,7 @@ function showPage(name, el) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
-  if (el) el.classList.add('active');
+  if (el && el.classList) el.classList.add('active');
   if (name === 'products') renderProductsTable();
   if (name === 'dashboard') updateDashboard();
   if (name === 'addProduct') resetForm();
@@ -588,7 +581,7 @@ function resetForm() {
 function editProduct(id) {
   const p = products.find(x => x.id === id);
   if (!p) return;
-  showPage('addProduct', document.querySelector('[onclick*=addProduct]'));
+  showPage('addProduct', null);
   document.getElementById('formTitle').textContent = 'Edit Product';
   document.getElementById('editId').value = id;
   document.getElementById('f_name').value  = p.name;
@@ -627,7 +620,7 @@ function saveProduct() {
     toast('✅ Product added!');
   }
   updateDashboard();
-  showPage('products', document.querySelector('[onclick*=\\'products\\']'));
+  showPage('products', null);
 }
 
 function deleteProduct(id) {
