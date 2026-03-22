@@ -460,7 +460,7 @@
 
 <script>
 // ── Password (change this to your own!) ──────────────────
-let ADMIN_PASSWORD = 'TrendVibes@2025';
+let ADMIN_PASSWORD = 'trendvibes2025';
 
 // ── Products data ─────────────────────────────────────────
 let products = [
@@ -479,7 +479,7 @@ let selectedEmoji = '👗';
 
 // ── Login ─────────────────────────────────────────────────
 function doLogin() {
-  const pw = document.getElementById('pwInput').value;
+  const pw = document.getElementById('pwInput').value.trim();
   if (pw === ADMIN_PASSWORD) {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminWrap').style.display = 'block';
