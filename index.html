@@ -932,16 +932,46 @@
 <div class="snack" id="snack"><span id="snackMsg"></span></div>
 
 <script>
-const products = [
-  { id:1, name:'Kanjivaram Silk', sub:'Traditional Silk Saree', cat:'saree', price:2499, emoji:'🥻', badge:'new', stars:'★★★★★' },
-  { id:2, name:'Banarasi Weave', sub:'Handwoven Banarasi Saree', cat:'saree', price:3299, emoji:'🥻', badge:'hot', stars:'★★★★★' },
-  { id:3, name:'Floral Crop Top', sub:'Casual Summer Top', cat:'top', price:499, emoji:'👘', badge:'new', stars:'★★★★☆' },
-  { id:4, name:'Embroidered Top', sub:'Elegant Party Wear Top', cat:'top', price:799, oldPrice:1099, emoji:'✨', badge:'sale', stars:'★★★★★' },
-  { id:5, name:'Pleated Midi Skirt', sub:'Flowy Everyday Skirt', cat:'skirts', price:649, emoji:'👗', badge:'new', stars:'★★★★★' },
-  { id:6, name:'Printed Mini Skirt', sub:'Trendy Mini Skirt', cat:'skirts', price:549, oldPrice:799, emoji:'🌸', badge:'sale', stars:'★★★★☆' },
-  { id:7, name:'Classic White Tee', sub:'Everyday Cotton T-Shirt', cat:'tshirts', price:299, emoji:'👚', badge:'hot', stars:'★★★★★' },
-  { id:8, name:'Graphic Printed Tee', sub:'Casual Graphic T-Shirt', cat:'tshirts', price:399, emoji:'🌼', badge:'new', stars:'★★★★☆' },
+// ── STORAGE KEY (must match admin) ───────
+var STORE_KEY = "trendvibes_products";
+
+// ── DEFAULT PRODUCTS ─────────────────────
+var DEFAULT_PRODUCTS = [
+  { id:1, name:'Kanjivaram Silk',    sub:'Traditional Silk Saree',   cat:'saree',   price:2499, emoji:'🥻', badge:'new',  stars:'★★★★★', img:'' },
+  { id:2, name:'Banarasi Weave',     sub:'Handwoven Banarasi Saree',  cat:'saree',   price:3299, emoji:'🥻', badge:'hot',  stars:'★★★★★', img:'' },
+  { id:3, name:'Floral Crop Top',    sub:'Casual Summer Top',         cat:'top',     price:499,  emoji:'👘', badge:'new',  stars:'★★★★☆', img:'' },
+  { id:4, name:'Embroidered Top',    sub:'Elegant Party Wear Top',    cat:'top',     price:799,  oldPrice:1099, emoji:'✨', badge:'sale', stars:'★★★★★', img:'' },
+  { id:5, name:'Pleated Midi Skirt', sub:'Flowy Everyday Skirt',      cat:'skirts',  price:649,  emoji:'👗', badge:'new',  stars:'★★★★★', img:'' },
+  { id:6, name:'Printed Mini Skirt', sub:'Trendy Mini Skirt',         cat:'skirts',  price:549,  oldPrice:799, emoji:'🌸', badge:'sale', stars:'★★★★☆', img:'' },
+  { id:7, name:'Classic White Tee',  sub:'Everyday Cotton T-Shirt',   cat:'tshirts', price:299,  emoji:'👚', badge:'hot',  stars:'★★★★★', img:'' },
+  { id:8, name:'Graphic Printed Tee',sub:'Casual Graphic T-Shirt',    cat:'tshirts', price:399,  emoji:'🌼', badge:'new',  stars:'★★★★☆', img:'' }
 ];
+
+// ── LOAD FROM LOCALSTORAGE ────────────────
+function loadFromStorage() {
+  try {
+    var saved = localStorage.getItem(STORE_KEY);
+    if (!saved) return DEFAULT_PRODUCTS;
+    var adminProds = JSON.parse(saved);
+    // Convert admin format to customer format
+    return adminProds.map(function(p) {
+      return {
+        id: p.id,
+        name: p.name,
+        sub: p.desc || p.sub || '',
+        cat: p.cat,
+        price: p.price,
+        oldPrice: p.old > 0 ? p.old : undefined,
+        emoji: p.em || p.emoji || '👗',
+        badge: p.badge || null,
+        stars: p.stars ? (typeof p.stars === 'number' ? '★'.repeat(p.stars) + '☆'.repeat(5-p.stars) : p.stars) : '★★★★★',
+        img: p.img || ''
+      };
+    });
+  } catch(e) { return DEFAULT_PRODUCTS; }
+}
+
+var products = loadFromStorage();
 
 let cart = [];
 
